@@ -8,6 +8,9 @@ export default class Thought extends BaseModel {
   @column()
   public body: string
 
+  @column()
+  public hex: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

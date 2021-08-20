@@ -7,6 +7,7 @@ export default class Thoughts extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string("body", 2000);
+      table.string("hex");
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
