@@ -20,7 +20,9 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get("/thoughts", "ThoughtsController.index");
+Route.get("/thoughts", "ThoughtsController.all");
+
+Route.get("/thought-by-id", "ThoughtsController.getThoughtById");
 
 Route.get('/', async () => {
   return { hello: 'world' }
