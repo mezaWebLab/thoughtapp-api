@@ -7,7 +7,6 @@ export default class ThoughtsController {
     }
 
     public async getThoughtById({ request }) {
-        console.log(request.requestData);
         return await Thought.find(request.requestData.id);
     }
 }
