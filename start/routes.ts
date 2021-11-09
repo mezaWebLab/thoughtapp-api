@@ -20,6 +20,7 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
+Route.get("/auth", async () => {}).middleware("auth")
 Route.get("/thoughts", "ThoughtsController.all");
 Route.get("/thought-by-id", "ThoughtsController.getThoughtById");
 Route.post("/user/create", "UsersController.create");
