@@ -2,7 +2,6 @@
 import User from "App/Models/User";
 import HTTPHelper from "App/Helpers/HTTPHelper";
 import UserHelper from "App/Helpers/UserHelper";
-import CoreHelper from "App/Helpers/CoreHelper";
 import Hash from '@ioc:Adonis/Core/Hash';
 
 export default class UsersController {
@@ -17,20 +16,23 @@ export default class UsersController {
             user.email = body.email;
             user.password = body.password;
 
-            if (user.password.length < 9) errors.push("PASSWORD_NOT_ALLOWED");
-            if (!CoreHelper.validateEmail(user.email)) errors.push("EMAIL_NOT_ALLOWED");
-            if (!UserHelper.usernameExists(user.username)) errors.push("USERNAME_ALREADY_EXISTS");
-            if (!UserHelper.emailExists(user.email)) errors.push("EMAIL_ALREADY_EXISTS");
+            const userNameExists = await UserHelper.usernameExists(user.username),
+                emailExists = await UserHelper.emailExists(user.email);
+
+            if (user.password.length < 8) errors.push("PASSWORD_NOT_ALLOWED");
+            if (!UserHelper.validateEmail(user.email)) errors.push("EMAIL_NOT_ALLOWED");
+            if (userNameExists) errors.push("USERNAME_ALREADY_EXISTS");
+            if (emailExists) errors.push("EMAIL_ALREADY_EXISTS");
 
             if (errors.length > 0) {
-                return response.status(400).send(errors);
+                return response.status(400).json(errors);
             } else {
                 await user.save();
                 return user;
             }
         }
 
-        return response.status(400).send(["MISSING_PARAMETERS"]);
+        return response.status(400).send(["MISSING_SIGN_UP_PARAMETERS"]);
     }
 
     public async login({ request, response, auth }) {
@@ -41,23 +43,23 @@ export default class UsersController {
             try {
                 const user = await User
                     .query()
-                    .where(CoreHelper.validateEmail(body.usernameOrEmail) ? "email" : "username", body.usernameOrEmail)
+                    .where(UserHelper.validateEmail(body.usernameOrEmail) ? "email" : "username", body.usernameOrEmail)
                     .firstOrFail();
 
                 if (!(await Hash.verify(user.password, body.password))) {
                     errors.push("PASSWORD_NOT_VALID");
-                    return response.status(404).send(errors);
+                    return response.status(404).json(errors);
                 }
 
                 const token = await auth.use('api').generate(user);
                 return response.status(200).send({ user, token });
             } catch (e) {
                 errors.push("USERNAME_OR_EMAIL_NOT_FOUND");
-                return response.status(404).send(errors);
+                return response.status(404).json(errors);
             }
         } else {    
             errors.push("CREDENTIALS_NOT_PROVIDED");
-            return response.status(400).send(errors);
+            return response.status(400).json(errors);
         }
     }
 }
