@@ -11,6 +11,12 @@ export default class Thought extends BaseModel {
   @column()
   public hex: string
 
+  @column()
+  public latitude: string
+
+  @column()
+  public longitude: string
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

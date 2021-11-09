@@ -8,6 +8,9 @@ export default class Thoughts extends BaseSchema {
       table.increments('id')
       table.string("body", 2000);
       table.string("hex");
+      table.string("latitude");
+      table.string("longitude");
+      
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */
