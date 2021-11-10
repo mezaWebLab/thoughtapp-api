@@ -4,13 +4,14 @@ export default class Thoughts extends BaseSchema {
   protected tableName = 'thoughts'
 
   public async up () {
-    this.schema.createTable(this.tableName, (table) => {
+    this.schema.createTable(this.tableName, table => {
       table.increments('id')
+      table.string("title", 2000);
       table.string("body", 2000);
       table.string("hex");
       table.string("latitude");
       table.string("longitude");
-      
+
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

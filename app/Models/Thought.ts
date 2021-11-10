@@ -6,6 +6,9 @@ export default class Thought extends BaseModel {
   public id: number
 
   @column()
+  public title: string
+
+  @column()
   public body: string
 
   @column()
